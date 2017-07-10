@@ -1,7 +1,8 @@
 package com.acme.lab4eurekaclientsolution.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,10 @@ import java.util.List;
 
 @RestController("/sentence")
 public class EurekaController {
-	@Autowired DiscoveryClient client;
+	private static final Logger logger = LoggerFactory.getLogger(EurekaController.class);
+	@Autowired
+	private DiscoveryClient client;
+
 
 	@RequestMapping
 	public String getSentence() {
@@ -28,9 +32,19 @@ public class EurekaController {
 
 	private String getWord(String service) {
 		List<ServiceInstance> list = client.getInstances(service);
+
+		List<String> allServs = client.getServices();
+		System.out.println("All servs: " + allServs);
+
+		logger.debug("Service name: {} list: {}", service, list);
+		System.out.println("Service name: " + service + " list: " + list);
+
 		if (list != null && list.size() > 0 ) {
 			URI uri = list.get(0).getUri();
 			if (uri !=null ) {
+
+				logger.debug("About to hit the URI: {}", uri);
+				System.out.println("About to hit the URI: " + uri);
 				return (new RestTemplate()).getForObject(uri,String.class);
 			}
 		}

@@ -1,4 +1,8 @@
 ---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  http://localhost:8010/eureka/
 spring:
   cloud:
     config:
@@ -11,3 +15,4 @@ spring:
           searchLocations: classpath:offline-repository/
 server:
   port: 8001
+
