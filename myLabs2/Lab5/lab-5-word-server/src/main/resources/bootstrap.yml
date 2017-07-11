@@ -1,0 +1,46 @@
+---
+spring:
+  cloud:
+    config:
+      uri:  http://localhost:8001
+server:
+  port: ${PORT:${SERVER_PORT:0}}   # Select any available port if neither port nor server port are specified.
+
+# Depending on which profile is active, the application gives
+# itself a different name when registering with Eureka
+
+# mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=subject"
+#mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=verb"
+#mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=article"
+#mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=adjective"
+#mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=noun"
+
+---
+spring:
+  profiles: subject
+  application:
+    name: subject
+
+---
+spring:
+  profiles: verb
+  application:
+    name: verb
+
+---
+spring:
+  profiles: article
+  application:
+    name: article
+
+---
+spring:
+  profiles: adjective
+  application:
+    name: adjective
+
+---
+spring:
+  profiles: noun
+  application:
+    name: noun
