@@ -1,11 +1,8 @@
 package com.acme.lab5sentenceserver;
 
-import java.net.URI;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,7 +11,11 @@ import org.springframework.web.client.RestTemplate;
 @Controller
 public class SentenceController {
 
-	@Autowired DiscoveryClient client;
+//	@Autowired
+//	DiscoveryClient client;
+
+	@Autowired
+	private LoadBalancerClient loadBalancer;
 
 
 	/**
@@ -57,15 +58,21 @@ public class SentenceController {
 	 * Obtain a random word for a given part of speech, where the part
 	 * of speech is indicated by the given service / client ID:
 	 */
+//	public String getWord(String service) {
+//		List<ServiceInstance> list = client.getInstances(service);
+//		if (list != null && list.size() > 0 ) {
+//			URI uri = list.get(0).getUri();
+//			if (uri !=null ) {
+//				return (new RestTemplate()).getForObject(uri,String.class);
+//			}
+//		}
+//		return null;
+//	}
+
 	public String getWord(String service) {
-		List<ServiceInstance> list = client.getInstances(service);
-		if (list != null && list.size() > 0 ) {
-			URI uri = list.get(0).getUri();
-			if (uri !=null ) {
-				return (new RestTemplate()).getForObject(uri,String.class);
-			}
-		}
-		return null;
+		ServiceInstance instance = loadBalancer.choose(service);
+		System.out.println("Choosen: " + instance.getUri());
+		return new RestTemplate().getForObject(instance.getUri(), String.class);
 	}
 
 }
