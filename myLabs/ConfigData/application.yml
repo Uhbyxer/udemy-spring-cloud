@@ -11,6 +11,12 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8010/eureka/,http://localhost:8011/eureka/,http://localhost:8012/eureka/,http://localhost:8013/eureka/
 
+
+---
+spring:
+  profiles: sentence
+words: NotApplicable
+
 ---
 spring:
   profiles: subject
