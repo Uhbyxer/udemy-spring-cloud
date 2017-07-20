@@ -8,3 +8,4 @@ spring:
   profiles: sentence
 server:
   port: 8020
+words: NotApplicable
