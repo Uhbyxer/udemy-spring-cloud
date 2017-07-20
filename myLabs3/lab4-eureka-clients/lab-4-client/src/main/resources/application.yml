@@ -1,4 +1,10 @@
 
 ---
 server:
+  port: ${PORT:${SERVER_PORT:0}}
+
+---
+spring:
+  profiles: sentence
+server:
   port: 8020
