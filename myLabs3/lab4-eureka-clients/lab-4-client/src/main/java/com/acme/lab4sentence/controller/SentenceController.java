@@ -4,16 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.List;
-
-@RestController
-public class SentenceController {
-	@Autowired private DiscoveryClient client;
+@RestController public class SentenceController {
+	@Autowired private LoadBalancerClient loadBalancer;
 
 	@Value("${words}") private String words;
 
@@ -24,18 +21,23 @@ public class SentenceController {
 	}
 
 	@GetMapping("/sentence") public String getSentence() {
-		return getWord("LAB-4-SUBJECT") + " " + getWord("LAB-4-VERB") + " " + getWord("LAB-4-ARTICLE") + " " + getWord(
-				"LAB-4-ADJECTIVE") + " " + getWord("LAB-4-NOUN") + ".";
+		return "<h3>Some Sentences</h3><br/>" + buildSentence() + "<br/><br/>" + buildSentence() + "<br/><br/>"
+				+ buildSentence() + "<br/><br/>" + buildSentence() + "<br/><br/>" + buildSentence() + "<br/><br/>";
 	}
 
-	private String getWord(String service) {
-		List<ServiceInstance> instances = client.getInstances(service);
-		if (instances != null && instances.size() > 0) {
-			URI uri = instances.get(0).getUri();
-			if (uri != null) {
-				return new RestTemplate().getForObject(uri, String.class);
-			}
+	private String buildSentence() {
+		try {
+			return String.format("%s %s %s %s %s.", getWordFromInstance("SUBJECT"), getWordFromInstance("VERB"), getWordFromInstance("ARTICLE"),
+					getWordFromInstance("ADJECTIVE"), getWordFromInstance("NOUN"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Sorry, Michael...";
 		}
-		return null;
+	}
+
+	private String getWordFromInstance(String service) {
+		ServiceInstance instance = loadBalancer.choose("LAB-4-"+ service);
+		System.out.println("Ribbon's choice is: " + instance.getUri());
+		return new RestTemplate().getForObject(instance.getUri(), String.class);
 	}
 }
