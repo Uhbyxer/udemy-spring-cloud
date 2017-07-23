@@ -12,6 +12,7 @@ server:
 eureka:
   instance:
     hostname: eureka-primary
+    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     registerWithEureka: true
     fetchRegistry: true
@@ -28,6 +29,7 @@ server:
 eureka:
   instance:
     hostname: eureka-secondary
+    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     registerWithEureka: true
     fetchRegistry: true
@@ -44,6 +46,7 @@ server:
 eureka:
   instance:
     hostname: eureka-tertiary
+    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     registerWithEureka: true
     fetchRegistry: true
