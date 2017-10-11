@@ -16,3 +16,6 @@ spring:
 server:
   port: 8002
 words: NotApplicable
+management:
+  security:
+    enabled: false
